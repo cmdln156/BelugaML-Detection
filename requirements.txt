@@ -1,0 +1,6 @@
+moviepy==1.0.3
+numpy==1.21.4
+pandas==1.0.1
+Pillow==9.1.1
+streamlit==0.60.0
+streamlit_embedcode==0.1.2
