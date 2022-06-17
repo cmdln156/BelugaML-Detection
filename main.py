@@ -10,27 +10,18 @@ import time, sys
 from streamlit_embedcode import github_gist
 import urllib.request
 import urllib
-import moviepy.editor as moviepy
-import cv2
+import moviepy.editor as moviepycopy
 import numpy as np
 import time
 import sys
+from os.path import exists
 
-
-def object_detection_image():
+def object_detection_image(config_filename,weights_filename):
     st.title('Beluga and Watercraft Detection Using Convolutional Neural Networks')
     st.header('M. Harasyn, W. Chan, E. Ausen, and D. Barber')
     st.subheader('Centre for Earth Observation Science, University of Manitoba')
 
-    #Download config file.
-    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721.cfg'
-    config_filename = url.split('/')[-1]
-    urllib.request.urlretrieve(url, config_filename)
-    
-    #Download weights.
-    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721_best.weights'
-    weights_filename = url.split('/')[-1]
-    urllib.request.urlretrieve(url, weights_filename)
+   
 
     file = st.file_uploader('Upload Image', type = ['jpg','png','jpeg'])
     if file!= None:
@@ -107,7 +98,21 @@ def object_detection_image():
 
 def main():
 
-    object_detection_image()
+
+     #Download config file.
+    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721.cfg'
+    config_filename = url.split('/')[-1]
+    if (not exists(config_filename)) or (os.path.getsize(config_filename)!=12931): 
+        urllib.request.urlretrieve(url, config_filename)
+    
+    #Download weights.
+    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721_best.weights'
+    weights_filename = url.split('/')[-1]
+    print (os.path.getsize(weights_filename))
+    if (not exists(weights_filename)) or (os.path.getsize(weights_filename)!=256059060): 
+        urllib.request.urlretrieve(url, weights_filename)
+
+    object_detection_image(config_filename,weights_filename)
 
 
 
