@@ -98,25 +98,26 @@ def object_detection_image(config_filename,weights_filename):
 
 def main():
 
-
-     #Download config file.
+     #Download config file if not present or not the right size.
     url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721.cfg'
     config_filename = url.split('/')[-1]
-    if (not exists(config_filename)) or (os.path.getsize(config_filename)!=12931): 
+    if (not exists(config_filename)): 
         urllib.request.urlretrieve(url, config_filename)
-    
-    #Download weights.
+    else if (os.path.getsize(config_filename)!=12931):
+        urllib.request.urlretrieve(url, config_filename)
+        
+    #Download weights if not present or not the right size..
     url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721_best.weights'
     weights_filename = url.split('/')[-1]
-    print (os.path.getsize(weights_filename))
-    if (not exists(weights_filename)) or (os.path.getsize(weights_filename)!=256059060): 
+    if (not exists(weights_filename)): 
+        urllib.request.urlretrieve(url, weights_filename)
+    else if (os.path.getsize(weights_filename)!=256059060)
         urllib.request.urlretrieve(url, weights_filename)
 
+    #Run object detection.
     object_detection_image(config_filename,weights_filename)
-
-
 
         
         
 if __name__ == '__main__':
-		main()	
+        main()  
