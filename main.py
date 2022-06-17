@@ -17,11 +17,6 @@ import sys
 from os.path import exists
 
 def object_detection_image(config_filename,weights_filename):
-    st.title('Beluga and Watercraft Detection Using Convolutional Neural Networks')
-    st.header('M. Harasyn, W. Chan, E. Ausen, and D. Barber')
-    st.subheader('Centre for Earth Observation Science, University of Manitoba')
-
-   
 
     file = st.file_uploader('Upload Image', type = ['jpg','png','jpeg'])
     if file!= None:
@@ -93,28 +88,68 @@ def object_detection_image(config_filename,weights_filename):
 
 
 
+def download_file(file_path):
+#Source: https://github.com/streamlit/demo-self-driving
+
+    # Don't download the file twice. (If possible, verify the download using the file length.)
+    if os.path.exists(file_path):
+        if "size" not in EXTERNAL_DEPENDENCIES[file_path]:
+            return
+        elif os.path.getsize(file_path) == EXTERNAL_DEPENDENCIES[file_path]["size"]:
+            return
+
+    # These are handles to two visual elements to animate.
+    weights_warning, progress_bar = None, None
+    try:
+        weights_warning = st.warning("Downloading %s..." % file_path)
+        progress_bar = st.progress(0)
+        with open(file_path, "wb") as output_file:
+            with urllib.request.urlopen(EXTERNAL_DEPENDENCIES[file_path]["url"]) as response:
+                length = int(response.info()["Content-Length"])
+                counter = 0.0
+                MEGABYTES = 2.0 ** 20.0
+                while True:
+                    data = response.read(8192)
+                    if not data:
+                        break
+                    counter += len(data)
+                    output_file.write(data)
+
+                    # We perform animation by overwriting the elements.
+                    weights_warning.warning("Downloading %s... (%6.2f/%6.2f MB)" %
+                        (file_path, counter / MEGABYTES, length / MEGABYTES))
+                    progress_bar.progress(min(counter / length, 1.0))
+
+    # Finally, we remove these visual elements by calling .empty().
+    finally:
+        if weights_warning is not None:
+            weights_warning.empty()
+        if progress_bar is not None:
+            progress_bar.empty()
+            
 def main():
 
-     #Download config file if not present or not the right size.
-    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721.cfg'
-    config_filename = url.split('/')[-1]
-    if (not exists(config_filename)): 
-        urllib.request.urlretrieve(url, config_filename)
-    elif (os.path.getsize(config_filename)!=12931):
-        urllib.request.urlretrieve(url, config_filename)
-        
-    #Download weights if not present or not the right size..
-    url = 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721_best.weights'
-    weights_filename = url.split('/')[-1]
-    if (not exists(weights_filename)): 
-        urllib.request.urlretrieve(url, weights_filename)
-    elif (os.path.getsize(weights_filename)!=256059060):
-        urllib.request.urlretrieve(url, weights_filename)
+    st.title('Beluga and Watercraft Detection Using Convolutional Neural Networks')
+    st.header('M. Harasyn, W. Chan, E. Ausen, and D. Barber')
+    st.subheader('Centre for Earth Observation Science, University of Manitoba')
+    
+    #Download config file if not present or not the right size.
+    for filename in EXTERNAL_DEPENDENCIES.keys():
+        download_file(filename)
 
-    #Run object detection.
-    object_detection_image(config_filename,weights_filename)
+    object_detection_image("032721.cfg","032721.weights")
 
-        
-        
+
+# External files to download.
+EXTERNAL_DEPENDENCIES = {
+    "032721.weights": {
+        "url": 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721_best.weights',
+        "size": 256059060
+    },
+    "032721.cfg": {
+        "url": 'https://github.com/cmdln156/BelugaML-Detection/releases/download/v1.0.0/yolo-obj_032721.cfg',
+        "size": 12931
+    }
+}
 if __name__ == '__main__':
         main()  
