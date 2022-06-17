@@ -89,7 +89,6 @@ def object_detection_image(config_filename,weights_filename):
     
         st.image(img2, caption='Object Detections')
         
-        cv2.destroyAllWindows()
         my_bar.progress(100)
 
 
