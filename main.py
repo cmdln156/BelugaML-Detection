@@ -103,7 +103,7 @@ def main():
     config_filename = url.split('/')[-1]
     if (not exists(config_filename)): 
         urllib.request.urlretrieve(url, config_filename)
-    else if (os.path.getsize(config_filename)!=12931):
+    elif (os.path.getsize(config_filename)!=12931):
         urllib.request.urlretrieve(url, config_filename)
         
     #Download weights if not present or not the right size..
@@ -111,7 +111,7 @@ def main():
     weights_filename = url.split('/')[-1]
     if (not exists(weights_filename)): 
         urllib.request.urlretrieve(url, weights_filename)
-    else if (os.path.getsize(weights_filename)!=256059060)
+    elif (os.path.getsize(weights_filename)!=256059060)
         urllib.request.urlretrieve(url, weights_filename)
 
     #Run object detection.
