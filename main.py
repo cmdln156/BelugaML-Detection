@@ -111,7 +111,7 @@ def main():
     weights_filename = url.split('/')[-1]
     if (not exists(weights_filename)): 
         urllib.request.urlretrieve(url, weights_filename)
-    elif (os.path.getsize(weights_filename)!=256059060)
+    elif (os.path.getsize(weights_filename)!=256059060):
         urllib.request.urlretrieve(url, weights_filename)
 
     #Run object detection.
